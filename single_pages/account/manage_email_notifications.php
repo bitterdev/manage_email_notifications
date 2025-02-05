@@ -35,7 +35,7 @@ $token = $app->make(Token::class);
             <?php foreach ($mailTemplates as $templateName) { ?>
                 <div class="form-check">
                     <?php echo $form->checkbox("enabledNotifications[" . $templateName . "]", true, $enabledNotifications[$templateName] ?? true, ["id" => "enabledNotifications_" . $templateName]); ?>
-                    <?php echo $form->label("enabledNotifications_" . $templateName, $nameMapping[$templateName] ?? ucwords(str_replace('_', ' ', $templateName))); ?>
+                    <?php echo $form->label("enabledNotifications_" . $templateName, t($nameMapping[$templateName] ?? ucwords(str_replace('_', ' ', $templateName)))); ?>
                 </div>
             <?php } ?>
         </div>
