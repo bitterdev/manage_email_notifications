@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<concrete5-cif version="1.0">
+    <singlepages>
+        <page name="Manage Email Notifications" path="/account/manage_email_notifications"
+              filename="/account/manage_email_notifications.php" package="manage_email_notifications"/>
+        <page name="Manage Email Notifications" path="/dashboard/manage_email_notifications"
+              filename="/dashboard/manage_email_notifications.php" package="manage_email_notifications"/>
+        <page name="Settings" path="/dashboard/manage_email_notifications/settings"
+              filename="/dashboard/manage_email_notifications/settings.php" package="manage_email_notifications"/>
+    </singlepages>
+</concrete5-cif>
