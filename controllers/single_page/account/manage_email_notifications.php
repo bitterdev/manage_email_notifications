@@ -3,10 +3,12 @@
 namespace Concrete\Package\ManageEmailNotifications\Controller\SinglePage\Account;
 
 use Bitter\ManageEmailNotifications\EmailNotifications\Service;
+use Concrete\Core\Database\Connection\Connection;
 use Concrete\Core\Entity\Site\Site;
 use Concrete\Core\Error\ErrorList\ErrorList;
 use Concrete\Core\Form\Service\Validation;
 use Concrete\Core\Page\Controller\AccountPageController;
+use Concrete\Core\User\User;
 
 class ManageEmailNotifications extends AccountPageController
 {
@@ -32,6 +34,10 @@ class ManageEmailNotifications extends AccountPageController
         /** @noinspection PhpUnhandledExceptionInspection */
         $site = $this->app->make('site')->getSite();
         $config = $site->getConfigRepository();
+        /** @var Connection $db */
+        /** @noinspection PhpUnhandledExceptionInspection */
+        $db = $this->app->make(Connection::class);
+        $u = new User();
 
         if ($this->getRequest()->getMethod() === "POST") {
             /** @var Validation $formValidator */
@@ -41,15 +47,22 @@ class ManageEmailNotifications extends AccountPageController
             $formValidator->addRequiredToken("update_settings");
 
             if ($formValidator->test()) {
-                $enabledNotifications = (array)$this->request->request->get("enabledNotifications", []);
+                $enabledNotifications = [];
 
-                foreach($this->emailNotificationService->getMailTemplates() as $templateName) {
-                    if (!isset($enabledNotifications[$templateName])) {
-                        $enabledNotifications[$templateName] = false;
-                    }
+                foreach ((array)$this->request->request->get("enabledNotifications", []) as $mailTemplate => $isChecked) {
+                    $enabledNotifications[] = $mailTemplate;
                 }
 
-                $config->save("manage_email_notifications.enabled_notifications", $enabledNotifications);
+                $db->executeQuery("DELETE FROM DisabledNotifications WHERE uID = ?", [$u->getUserID()]);
+
+                foreach($this->emailNotificationService->getMailTemplates() as $mailTemplate) {
+                    if (!in_array($mailTemplate, $enabledNotifications)) {
+                        $db->insert("DisabledNotifications", [
+                            "uID" => $u->getUserID(),
+                            "mailTemplate" => $mailTemplate
+                        ]);
+                    }
+                }
 
                 if (!$this->error->has()) {
                     $this->set("success", t("The settings has been successfully updated."));
@@ -64,7 +77,13 @@ class ManageEmailNotifications extends AccountPageController
             }
         }
 
+        $disabledNotifications = [];
+
+        foreach ($db->fetchAll("SELECT mailTemplate FROM DisabledNotifications WHERE uID = ?", [$u->getUserID()]) as $row) {
+            $disabledNotifications[] = $row["mailTemplate"];
+        }
+
         $this->set("nameMapping", $config->get("manage_email_notifications.name_mapping"));
-        $this->set("enabledNotifications", $config->get("manage_email_notifications.enabled_notifications"));
+        $this->set("disabledNotifications", $disabledNotifications);
     }
 }

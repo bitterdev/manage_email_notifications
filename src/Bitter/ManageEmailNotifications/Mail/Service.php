@@ -2,7 +2,9 @@
 
 namespace Bitter\ManageEmailNotifications\Mail;
 
+use Concrete\Core\Database\Connection\Connection;
 use Concrete\Core\Mail\Service as CoreMailService;
+use Concrete\Core\User\User;
 use Exception;
 
 class Service extends CoreMailService
@@ -14,21 +16,14 @@ class Service extends CoreMailService
         /** @var $siteService \Concrete\Core\Site\Service */
         $siteService = $this->app->make(\Concrete\Core\Site\Service::class);
         $site = $siteService->getSite();
-        $config = $site->getConfigRepository();
-        $enabledNotifications = (array)$config->get("manage_email_notifications.enabled_notifications", []);
         /** @noinspection PhpUnhandledExceptionInspection */
-        /** @var \Bitter\ManageEmailNotifications\EmailNotifications\Service $emailNotificationService */
-        $emailNotificationService = $this->app->make(\Bitter\ManageEmailNotifications\EmailNotifications\Service::class);
-        $allowedMailTemplates = [];
+        /** @var Connection $db */
+        $db = $this->app->make(Connection::class);
+        $u = new User();
 
-        if (count($enabledNotifications) === 0) {
-            $allowedMailTemplates = $emailNotificationService->getMailTemplates();
-        } else {
-            foreach ($enabledNotifications as $mailTemplate => $isEnabled) {
-                if ($isEnabled) {
-                    $allowedMailTemplates[] = $mailTemplate;
-                }
-            }
+        if ((int)$db->fetchAll("SELECT COUNT(*) FROM DisabledNotifications WHERE uID = ? AND mailTemplate = ?", [$u->getUserID(), $this->template]) > 0) {
+            // Ignore Mail
+            return true;
         }
 
         // Add support for Email Signature add-on
@@ -47,10 +42,6 @@ class Service extends CoreMailService
 
         if (strlen($this->bodyHTML) > 0) {
             $this->bodyHTML = $this->bodyHTML . $signature;
-        }
-
-        if (strlen($this->template) > 0 && !in_array($this->template, $allowedMailTemplates)) {
-            return true;
         }
 
         // Send the email

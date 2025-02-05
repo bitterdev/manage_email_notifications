@@ -11,21 +11,6 @@ class Service implements ApplicationAwareInterface
 {
     use ApplicationAwareTrait;
 
-    public function isMailTemplateWhitelisted(string $templateName): bool
-    {
-        /** @var Site $site */
-        /** @noinspection PhpUnhandledExceptionInspection */
-        $site = $this->app->make('site')->getSite();
-        $config = $site->getConfigRepository();
-        $enabledNotifications = $config->get("manage_email_notifications.enabled_notifications");
-
-        if (isset($enabledNotifications[$templateName]) && $enabledNotifications[$templateName] === false) {
-            return false;
-        } else {
-            return true;
-        }
-    }
-
     public function getMailTemplates(): array
     {
         $mailTemplates = [];

@@ -6,7 +6,7 @@ use Concrete\Core\Form\Service\Form;
 use Concrete\Core\Support\Facade\Application;
 use Concrete\Core\Validation\CSRF\Token;
 
-/** @var array $enabledNotifications */
+/** @var array $disabledNotifications */
 /** @var array $mailTemplates */
 /** @var array $nameMapping */
 
@@ -34,7 +34,7 @@ $token = $app->make(Token::class);
         <div class="form-group">
             <?php foreach ($mailTemplates as $templateName) { ?>
                 <div class="form-check">
-                    <?php echo $form->checkbox("enabledNotifications[" . $templateName . "]", true, $enabledNotifications[$templateName] ?? true, ["id" => "enabledNotifications_" . $templateName]); ?>
+                    <?php echo $form->checkbox("enabledNotifications[" . $templateName . "]", true, !in_array($templateName, $disabledNotifications), ["id" => "enabledNotifications_" . $templateName]); ?>
                     <?php echo $form->label("enabledNotifications_" . $templateName, t($nameMapping[$templateName] ?? ucwords(str_replace('_', ' ', $templateName)))); ?>
                 </div>
             <?php } ?>
