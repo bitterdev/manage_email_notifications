@@ -21,7 +21,7 @@ class Service extends CoreMailService
         $db = $this->app->make(Connection::class);
         $u = new User();
 
-        if ((int)$db->fetchAll("SELECT COUNT(*) FROM DisabledNotifications WHERE uID = ? AND mailTemplate = ?", [$u->getUserID(), $this->template]) > 0) {
+        if ($this->template !== "" && (int)$db->fetchAll("SELECT COUNT(*) FROM DisabledNotifications WHERE uID = ? AND mailTemplate = ?", [$u->getUserID(), $this->template]) > 0) {
             // Ignore Mail
             return true;
         }
