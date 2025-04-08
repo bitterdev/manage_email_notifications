@@ -9,7 +9,7 @@ use Concrete\Core\Entity\Package as PackageEntity;
 class Controller extends Package
 {
     protected string $pkgHandle = 'manage_email_notifications';
-    protected string $pkgVersion = '0.0.2';
+    protected string $pkgVersion = '0.0.1';
     protected $appVersionRequired = '9.0.0';
     protected $pkgAutoloaderRegistries = [
         'src/Bitter/ManageEmailNotifications' => 'Bitter\ManageEmailNotifications',
@@ -17,7 +17,7 @@ class Controller extends Package
 
     public function getPackageDescription(): string
     {
-        return t('Add an account page to manage email notifications.');
+        return t('Lets users manage which email notifications they want to receive.');
     }
 
     public function getPackageName(): string
