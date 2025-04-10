@@ -29,7 +29,7 @@ $token = $app->make(Token::class);
         <?php foreach ($mailTemplates as $templateName) { ?>
             <div class="form-group">
                 <?php echo $form->label("nameMapping_" . $templateName, t(ucwords(str_replace('_', ' ', $templateName)))); ?>
-                <?php echo $form->text("nameMapping[" . $templateName . "]", $nameMapping[$templateName] ?? ucwords(str_replace('_', ' ', $templateName)), ["id" => "nameMapping_" . $templateName]); ?>
+                <?php echo $form->text("nameMapping[" . $templateName . "]", $nameMapping[$templateName] ?? ucwords(str_replace('_', ' ', $templateName)), ["id" => "nameMapping_" . $templateName, "length" => 255]); ?>
             </div>
         <?php } ?>
     </fieldset>

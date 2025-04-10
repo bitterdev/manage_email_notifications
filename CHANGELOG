@@ -1,3 +1,8 @@
+Version 0.0.3
+==================================================
+- Add length attribute to text field
+- Ignore mail templates from not installed packages
+
 Version 0.0.2
 ==================================================
 - Add logic fix
