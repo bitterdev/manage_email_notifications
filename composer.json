@@ -1,5 +1,10 @@
 {
   "name": "bitter/manage_email_notifications",
   "type": "concrete5-package",
-  "description": "Lets users manage which email notifications they want to receive."
+  "description": "Lets users manage which email notifications they want to receive.",
+  "autoload": {
+    "psr-4": {
+      "Bitter\\ManageEmailNotifications\\": "src/Bitter/ManageEmailNotifications"
+    }
+  }
 }
