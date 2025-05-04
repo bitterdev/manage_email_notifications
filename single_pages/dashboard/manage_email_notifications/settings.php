@@ -5,6 +5,7 @@ defined('C5_EXECUTE') or die('Access denied');
 use Concrete\Core\Form\Service\Form;
 use Concrete\Core\Support\Facade\Application;
 use Concrete\Core\Validation\CSRF\Token;
+use Concrete\Core\View\View;
 
 /** @var array $mailTemplates */
 /** @var array $nameMapping */
@@ -17,6 +18,14 @@ $form = $app->make(Form::class);
 /** @noinspection PhpUnhandledExceptionInspection */
 $token = $app->make(Token::class);
 ?>
+
+<div class="ccm-dashboard-header-buttons">
+    <?php /** @noinspection PhpUnhandledExceptionInspection */
+    View::element("dashboard/help", [], "manage_email_notifications"); ?>
+</div>
+
+<?php /** @noinspection PhpUnhandledExceptionInspection */
+View::element("dashboard/did_you_know", [], "manage_email_notifications"); ?>
 
 <form action="#" method="post">
     <?php echo $token->output("update_settings"); ?>
